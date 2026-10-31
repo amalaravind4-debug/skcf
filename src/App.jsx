@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   motion,
   AnimatePresence,
+  MotionConfig,
 } from 'framer-motion';
 import {
   Shield,
@@ -60,6 +61,9 @@ const resolveImageSrc = (src) => {
   }
   return `/images/${src}`;
 };
+
+// Alt text from the photo's file name, e.g. 'riverbank-duel-kicks.jpg' -> 'riverbank duel kicks'
+const photoAlt = (src) => src.replace(/\.\w+$/, '').replace(/-/g, ' ');
 
 // ============================================================================
 // 7 SCROLL-SYNCHRONIZED KEYFRAME STANCES (Normalized coordinates 0 to 1)
@@ -250,6 +254,8 @@ const SCROLL_STANCES = [
     id: 6,
     section: 'Page End',
     label: 'Closing Salute',
+    // Both hands meet in front of the chest, so the left arm must not be drawn behind the torso
+    frontArms: true,
     accentColor: '#F59E0B',
     secondaryColor: '#EF4444',
     joints: {
@@ -353,6 +359,9 @@ function ScrollSyncedShadowCanvas() {
     handleResize();
     window.addEventListener('resize', handleResize);
 
+    // Reduced motion: poses still follow scroll, but idle animation (sash, ring, embers) stops
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     // Hold zone per section: the scroll range where its pause block sits around viewport centre
     let zones = [];
     const measure = () => {
@@ -424,7 +433,8 @@ function ScrollSyncedShadowCanvas() {
       accentColor,
       secondaryColor,
       timeSec,
-      isGhost = false
+      isGhost = false,
+      frontArms = false
     ) => {
       const toScreen = (pt) => ({
         x: cx + (pt.x - 0.5) * scale,
@@ -505,8 +515,11 @@ function ScrollSyncedShadowCanvas() {
       drawLimb(ctx, kneeR, ankleR, u * 2.5, u * 1.6, bodyFill, goldRim, 1.5);
       drawLimb(ctx, ankleR, footR, u * 1.7, u * 1.1, bodyFill, goldRim, 1.5);
 
-      drawLimb(ctx, shoulderL, elbowL, u * 2.4, u * 1.9, bodyFill, goldRim, 1.5);
-      drawLimb(ctx, elbowL, wristL, u * 1.9, u * 1.4, bodyFill, goldRim, 1.5);
+      const drawLeftArm = () => {
+        drawLimb(ctx, shoulderL, elbowL, u * 2.4, u * 1.9, bodyFill, goldRim, 1.5);
+        drawLimb(ctx, elbowL, wristL, u * 1.9, u * 1.4, bodyFill, goldRim, 1.5);
+      };
+      if (!frontArms) drawLeftArm();
 
       // Torso Core
       ctx.beginPath();
@@ -520,6 +533,8 @@ function ScrollSyncedShadowCanvas() {
       ctx.strokeStyle = rimStroke;
       ctx.lineWidth = 2.2;
       ctx.stroke();
+
+      if (frontArms) drawLeftArm();
 
       // Lead limbs
       drawLimb(ctx, hipL, kneeL, u * 3.5, u * 2.6, bodyFill, rimStroke, 2.2);
@@ -575,8 +590,12 @@ function ScrollSyncedShadowCanvas() {
       ctx.restore();
     };
 
+    let lastTs = null;
     const render = (timestamp) => {
-      const timeSec = timestamp * 0.001;
+      const timeSec = reduceMotion ? 0 : timestamp * 0.001;
+      // Frame-rate independence: dt is 1 at 60fps, 0.5 at 120fps; capped so a stalled tab doesn't jump
+      const dt = lastTs === null ? 1 : Math.min((timestamp - lastTs) / (1000 / 60), 4);
+      lastTs = timestamp;
       const w = canvas.width;
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
@@ -585,8 +604,10 @@ function ScrollSyncedShadowCanvas() {
       const target = stanceForScroll(window.scrollY, zones);
       // Ease toward the target pose; snap when close so held poses are perfectly still
       const diff = target - progressRef.current;
-      progressRef.current = Math.abs(diff) < 0.001 ? target : progressRef.current + diff * 0.12;
+      const ease = 1 - Math.pow(1 - 0.12, dt);
+      progressRef.current = Math.abs(diff) < 0.001 ? target : progressRef.current + diff * ease;
       const scaled = progressRef.current;
+      const frontArms = Boolean(SCROLL_STANCES[Math.round(scaled)].frontArms);
       const p = scaled / totalSegments;
       const idxA = Math.min(totalSegments - 1, Math.max(0, Math.floor(scaled)));
       const idxB = Math.min(totalSegments, idxA + 1);
@@ -655,7 +676,8 @@ function ScrollSyncedShadowCanvas() {
           ghost.accent,
           ghost.secondary,
           timeSec,
-          true
+          true,
+          frontArms
         );
       }
 
@@ -670,13 +692,16 @@ function ScrollSyncedShadowCanvas() {
         stanceA.accentColor,
         stanceA.secondaryColor,
         timeSec,
-        false
+        false,
+        frontArms
       );
 
       // Ambient dojo embers
       for (const pt of embersRef.current) {
-        pt.x += pt.vx;
-        pt.y += pt.vy;
+        if (!reduceMotion) {
+          pt.x += pt.vx * dt;
+          pt.y += pt.vy * dt;
+        }
         if (pt.y < 0) pt.y = 1;
         if (pt.x < 0) pt.x = 1;
         if (pt.x > 1) pt.x = 0;
@@ -807,7 +832,7 @@ const PROGRAMS = [
     title: 'Kids Martial Arts & Acrobatics',
     icon: Crown,
     color: 'from-amber-500 to-yellow-500',
-    photo: 'indoor-acrobatic-stunt.png',
+    photo: 'indoor-acrobatic-stunt.webp',
     description:
       'Inverted acrobatics, handstands, active physical fitness, anti-bullying confidence, and mutual respect.',
     highlights: [
@@ -923,8 +948,30 @@ export default function App() {
 
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [studentName, setStudentName] = useState('');
+  // Defaults must match an <option> value, or WhatsApp gets text the user never saw selected
   const [selectedAgeGroup, setSelectedAgeGroup] = useState('Youth & Adults (18+ yrs)');
   const [selectedTiming, setSelectedTiming] = useState('Evening (6:30 PM – 8:30 PM)');
+
+  useEffect(() => {
+    if (!lightboxPhoto) return;
+    const onKey = (e) => e.key === 'Escape' && setLightboxPhoto(null);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxPhoto]);
+
+  // Clickable photo frames: keyboard-operable and named for screen readers
+  const openPhoto = (src) => ({
+    role: 'button',
+    tabIndex: 0,
+    'aria-label': `Open photo: ${photoAlt(src)}`,
+    onClick: () => setLightboxPhoto(src),
+    onKeyDown: (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        setLightboxPhoto(src);
+      }
+    },
+  });
 
   const handleUnifiedWhatsAppEnquiry = (e) => {
     e.preventDefault();
@@ -938,6 +985,7 @@ export default function App() {
   };
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="min-h-screen bg-[#070709] text-zinc-100 selection:bg-red-600 selection:text-white overflow-x-hidden relative font-sans">
       {/* Background Continuous Scroll-Synchronized Shadow Warrior Engine */}
       <ScrollSyncedShadowCanvas />
@@ -947,7 +995,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
           <a href="#hero" className="flex items-center gap-2 min-[360px]:gap-2.5 sm:gap-3 min-w-0">
             <img
-              src={resolveImageSrc('logo.png')}
+              src={resolveImageSrc('logo-96.webp')}
               alt="Shaolin Kung-Fu Chamber of Fitness logo"
               className="w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 sm:w-12 sm:h-12 rounded-full bg-white p-0.5 object-contain shrink-0"
             />
@@ -985,7 +1033,7 @@ export default function App() {
           <div className="flex items-center gap-2">
             <a
               href="#enquiry"
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 min-[360px]:px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-xs sm:text-sm whitespace-nowrap transition-colors shrink-0 cursor-pointer"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 min-[360px]:px-3.5 sm:px-5 min-h-11 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-xs sm:text-sm whitespace-nowrap transition-colors shrink-0 cursor-pointer"
             >
               <span>Join Now</span>
               <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 max-[359px]:hidden" />
@@ -1033,7 +1081,7 @@ export default function App() {
                 <div className="inline-flex items-center gap-2 text-[11px] sm:text-xs font-black uppercase tracking-[0.25em] text-red-500 mb-2">
                   <div className="w-6 h-6 rounded-full overflow-hidden bg-white p-0.5 border border-amber-500/40 shadow-[0_0_10px_rgba(220,38,38,0.4)] shrink-0">
                     <img
-                      src={resolveImageSrc('logo.png')}
+                      src={resolveImageSrc('logo-96.webp')}
                       alt="Shaolin Kung-Fu Official Logo"
                       className="w-full h-full object-contain rounded-full"
                     />
@@ -1128,7 +1176,7 @@ export default function App() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.25 }}
                 whileHover={{ scale: 1.03 }}
-                onClick={() => setLightboxPhoto('traditional-flying-kick.jpg')}
+                {...openPhoto('hero-dive-roll.webp')}
                 className="w-full max-w-md rounded-3xl overflow-hidden border border-white/20 bg-zinc-950/80 shadow-[0_0_50px_rgba(220,38,38,0.3)] cursor-pointer group aspect-[4/3] p-1.5 flex items-center justify-center"
               >
                 <img
@@ -1208,7 +1256,7 @@ export default function App() {
                   <div className="text-amber-400 font-black text-xs sm:text-sm uppercase tracking-wider">
                     Grandmaster Sukumar Lineage
                   </div>
-                  <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                  <p className="text-sm text-zinc-400 leading-relaxed">
                     Certified black belt masters trained under Grandmaster Sukumar in Chennai.
                   </p>
                 </div>
@@ -1216,7 +1264,7 @@ export default function App() {
                   <div className="text-red-400 font-black text-xs sm:text-sm uppercase tracking-wider">
                     District & State Medalists
                   </div>
-                  <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                  <p className="text-sm text-zinc-400 leading-relaxed">
                     Consistent podium athletes across Wushu, Boxing, and Kickboxing tournaments.
                   </p>
                 </div>
@@ -1233,11 +1281,13 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.03 }}
-                onClick={() => setLightboxPhoto('lineage-vertical-split.png')}
+                {...openPhoto('lineage-vertical-split.png')}
                 className="w-full max-w-md rounded-3xl overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl cursor-pointer group aspect-[3/4]"
               >
                 <img
                   src={resolveImageSrc('lineage-vertical-split.png')}
+                  loading="lazy"
+                  decoding="async"
                   alt="Wushu student holding a standing vertical split kick in a Shaolin uniform, Thrithala"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
@@ -1305,11 +1355,13 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.03 }}
-                onClick={() => setLightboxPhoto('riverbank-duel-kicks.jpg')}
+                {...openPhoto('riverbank-duel-kicks.jpg')}
                 className="w-full max-w-md rounded-3xl overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl cursor-pointer group aspect-[4/3]"
               >
                 <img
                   src={resolveImageSrc('riverbank-duel-kicks.jpg')}
+                  loading="lazy"
+                  decoding="async"
                   alt="Two martial arts students trading high kicks on the Bharathapuzha riverbank, Thrithala"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
@@ -1338,7 +1390,7 @@ export default function App() {
                 >
                   <div>
                     {/* Action Photo (Pure Photo, Zero Text Overlays) */}
-                    <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-zinc-950">
+                    <div {...openPhoto(prog.photo)} className="relative h-48 sm:h-52 w-full overflow-hidden bg-zinc-950">
                       <img
                         src={resolveImageSrc(prog.photo)}
                         alt={`${prog.title} class at Shaolin Kung-Fu Chamber of Fitness, Thrithala`}
@@ -1362,7 +1414,7 @@ export default function App() {
                         </h3>
                       </div>
 
-                      <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                      <p className="text-sm text-zinc-400 leading-relaxed">
                         {prog.description}
                       </p>
 
@@ -1451,11 +1503,13 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.03 }}
-                onClick={() => setLightboxPhoto('indoor-acrobatic-stunt.png')}
+                {...openPhoto('indoor-acrobatic-stunt.webp')}
                 className="w-full max-w-md rounded-3xl overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl cursor-pointer group aspect-[4/3]"
               >
                 <img
-                  src={resolveImageSrc('indoor-acrobatic-stunt.png')}
+                  src={resolveImageSrc('indoor-acrobatic-stunt.webp')}
+                  loading="lazy"
+                  decoding="async"
                   alt="Kids martial arts acrobatics: partner handstand stunt in the Thrithala indoor hall"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
@@ -1476,7 +1530,7 @@ export default function App() {
                   delay: (idx % 3) * 0.06,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                onClick={() => setLightboxPhoto(item.src)}
+                {...openPhoto(item.src)}
                 className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-zinc-950 cursor-pointer shadow-xl ${item.span}`}
               >
                 <img
@@ -1540,7 +1594,7 @@ export default function App() {
               <h2 className="text-xl sm:text-3xl font-black text-white">
                 Class Timings &amp; Location in Thrithala
               </h2>
-              <p className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2">
+              <p className="text-sm text-zinc-300 flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                 <span>{CONTACT.address}</span>
               </p>
@@ -1589,11 +1643,13 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.03 }}
-                onClick={() => setLightboxPhoto('schedule-dojo-conditioning.jpg')}
+                {...openPhoto('schedule-dojo-conditioning.jpg')}
                 className="w-full max-w-md rounded-3xl overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl cursor-pointer group aspect-[4/3]"
               >
                 <img
                   src={resolveImageSrc('schedule-dojo-conditioning.jpg')}
+                  loading="lazy"
+                  decoding="async"
                   alt="Students doing low-stance conditioning on the mats inside the Thrithala martial arts chamber"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
@@ -1637,7 +1693,7 @@ export default function App() {
                       <Star key={idx} className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-amber-400" />
                     ))}
                   </div>
-                  <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
+                  <p className="text-sm text-zinc-200 leading-relaxed">
                     “{rev.text}”
                   </p>
                 </div>
@@ -1692,7 +1748,7 @@ export default function App() {
                   <h3>{q}</h3>
                   <ChevronRight className="w-4 h-4 shrink-0 text-amber-400 transition-transform group-open:rotate-90" />
                 </summary>
-                <p className="px-5 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                <p className="px-5 pb-5 text-sm text-zinc-300 leading-relaxed">
                   {a}
                 </p>
               </details>
@@ -1723,7 +1779,7 @@ export default function App() {
                 <div className="flex items-center gap-2.5 mb-2.5">
                   <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 border border-amber-500/40 shadow-[0_0_12px_rgba(220,38,38,0.4)] shrink-0">
                     <img
-                      src={resolveImageSrc('logo.png')}
+                      src={resolveImageSrc('logo-96.webp')}
                       alt="Shaolin Kung-Fu Official Logo"
                       className="w-full h-full object-contain rounded-full"
                     />
@@ -1735,7 +1791,7 @@ export default function App() {
                 <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
                   JOIN THE CHAMBER TODAY
                 </h2>
-                <p className="text-xs sm:text-sm text-zinc-300 mt-1.5 leading-relaxed">
+                <p className="text-sm text-zinc-300 mt-1.5 leading-relaxed">
                   Have questions about class timings, trial sessions, or batch
                   fees? Reach out directly to our Master on WhatsApp or phone call.
                 </p>
@@ -1743,27 +1799,30 @@ export default function App() {
 
               <form onSubmit={handleUnifiedWhatsAppEnquiry} className="space-y-3.5 pt-1">
                 <div>
-                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                  <label htmlFor="enq-name" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
                     Your Name (Optional)
                   </label>
                   <input
+                    id="enq-name"
+                    autoComplete="name"
                     type="text"
                     value={studentName}
                     onChange={(e) => setStudentName(e.target.value)}
                     placeholder="Enter name..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950/80 border border-white/20 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950/80 border border-white/20 text-base text-white placeholder-zinc-500 focus:outline-none focus:border-amber-400"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    <label htmlFor="enq-age" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
                       Age Category
                     </label>
                     <select
+                      id="enq-age"
                       value={selectedAgeGroup}
                       onChange={(e) => setSelectedAgeGroup(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-zinc-950/80 border border-white/20 text-sm text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-3 py-2.5 rounded-xl bg-zinc-950/80 border border-white/20 text-base text-white focus:outline-none focus:border-amber-400"
                     >
                       <option value="Kids Batch (5 – 12 yrs)">Kids Batch (5 – 12 yrs)</option>
                       <option value="Teens Batch (13 – 17 yrs)">Teens Batch (13 – 17 yrs)</option>
@@ -1773,13 +1832,14 @@ export default function App() {
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                    <label htmlFor="enq-batch" className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
                       Preferred Batch
                     </label>
                     <select
+                      id="enq-batch"
                       value={selectedTiming}
                       onChange={(e) => setSelectedTiming(e.target.value)}
-                      className="w-full px-3 py-2.5 rounded-xl bg-zinc-950/80 border border-white/20 text-sm text-white focus:outline-none focus:border-amber-400"
+                      className="w-full px-3 py-2.5 rounded-xl bg-zinc-950/80 border border-white/20 text-base text-white focus:outline-none focus:border-amber-400"
                     >
                       <option value="Evening (6:30 PM – 8:30 PM)">Evening (6:30 PM – 8:30 PM)</option>
                       <option value="Sunday (8:30 AM – 10:30 AM)">Sunday (8:30 AM – 10:30 AM)</option>
@@ -1819,11 +1879,13 @@ export default function App() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 whileHover={{ scale: 1.03 }}
-                onClick={() => setLightboxPhoto('shaolin-forms-duel.jpg')}
+                {...openPhoto('shaolin-forms-duel.jpg')}
                 className="w-full max-w-md rounded-3xl overflow-hidden border border-white/20 bg-zinc-950 shadow-2xl cursor-pointer group aspect-[4/3]"
               >
                 <img
                   src={resolveImageSrc('shaolin-forms-duel.jpg')}
+                  loading="lazy"
+                  decoding="async"
                   alt="Two black belt students in Shaolin uniforms practising kung fu forms outdoors"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
@@ -1848,9 +1910,13 @@ export default function App() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.92, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Photo preview"
               className="relative max-w-5xl w-full max-h-[90vh] rounded-3xl overflow-hidden bg-zinc-950 border border-white/20 shadow-2xl flex flex-col items-center justify-center"
             >
               <button
+                autoFocus
                 onClick={() => setLightboxPhoto(null)}
                 className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/80 text-white flex items-center justify-center hover:bg-red-600 transition-colors cursor-pointer border border-white/20"
                 aria-label="Close photo preview"
@@ -1860,7 +1926,7 @@ export default function App() {
               <div className="w-full h-full max-h-[85vh] flex items-center justify-center p-2 sm:p-4 bg-black">
                 <img
                   src={resolveImageSrc(lightboxPhoto)}
-                  alt="Shaolin Kung-Fu Academy Thrithala Full View"
+                  alt={photoAlt(lightboxPhoto)}
                   className="w-auto h-auto max-w-full max-h-[82vh] object-contain rounded-xl"
                 />
               </div>
@@ -1878,7 +1944,7 @@ export default function App() {
           <div className="flex items-center gap-3 text-center sm:text-left">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white p-0.5 border border-amber-500/40 shadow-[0_0_15px_rgba(220,38,38,0.4)] shrink-0">
               <img
-                src={resolveImageSrc('logo.png')}
+                src={resolveImageSrc('logo-96.webp')}
                 alt="Shaolin Kung-Fu Chamber of Fitness Official Logo"
                 className="w-full h-full object-contain rounded-full"
               />
@@ -1887,7 +1953,7 @@ export default function App() {
               <div className="text-xs sm:text-sm font-black text-white uppercase">
                 Shaolin Kung-fu Chamber of Fitness
               </div>
-              <address className="not-italic text-[10px] sm:text-xs text-zinc-500">
+              <address className="not-italic text-[11px] sm:text-xs text-zinc-400">
                 Palakkad – Ponnani Rd, Thrithala, Palakkad, Kerala 679534
               </address>
               <p className="text-[10px] sm:text-xs text-zinc-600 mt-0.5">
@@ -1917,5 +1983,6 @@ export default function App() {
         </div>
       </footer>
     </div>
+    </MotionConfig>
   );
 }
