@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Google Search Console Auto-indexing
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /
+
+Sitemap: https://shaolinkungfukerala.com/sitemap.xml
+
