@@ -945,30 +945,23 @@ export default function App() {
       {/* Navigation Header with Official Academy Logo */}
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
-          <a href="#hero" className="flex items-center gap-2.5 sm:gap-3 group">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden bg-white p-0.5 border-2 border-amber-500/50 shadow-[0_0_20px_rgba(220,38,38,0.45)] group-hover:scale-105 transition-transform shrink-0">
-              <img
-                src={resolveImageSrc('logo.png')}
-                alt="Shaolin Kung-Fu Chamber of Fitness Official Logo"
-                className="w-full h-full object-contain rounded-full"
-              />
-            </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-black tracking-wider text-xs sm:text-base text-white uppercase">
-                  Shaolin Kung-Fu
-                </span>
-                <span className="inline-flex items-center px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest bg-amber-500/20 text-amber-300 rounded-full border border-amber-500/30">
-                  5.0 ★ Thrithala
-                </span>
+          <a href="#hero" className="flex items-center gap-2 min-[360px]:gap-2.5 sm:gap-3 min-w-0">
+            <img
+              src={resolveImageSrc('logo.png')}
+              alt="Shaolin Kung-Fu Chamber of Fitness logo"
+              className="w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 sm:w-12 sm:h-12 rounded-full bg-white p-0.5 object-contain shrink-0"
+            />
+            <div className="min-w-0 leading-tight">
+              <div className="font-black text-[13px] min-[360px]:text-sm sm:text-base text-white uppercase tracking-wide truncate">
+                Shaolin Kung-Fu
               </div>
-              <p className="text-[10px] sm:text-[11px] text-zinc-400 tracking-wide line-clamp-1">
-                Chamber of Fitness • Palakkad – Ponnani Rd, Thrithala
-              </p>
+              <div className="text-[10px] min-[360px]:text-[11px] sm:text-xs text-zinc-400 truncate">
+                Chamber of Fitness · Thrithala
+              </div>
             </div>
           </a>
 
-          <nav className="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-zinc-300">
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-bold uppercase tracking-wider text-zinc-300 whitespace-nowrap">
             <a href="#lineage" className="hover:text-amber-400 transition-colors">
               About
             </a>
@@ -992,10 +985,10 @@ export default function App() {
           <div className="flex items-center gap-2">
             <a
               href="#enquiry"
-              className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-xs sm:text-sm shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all shrink-0 cursor-pointer"
+              className="inline-flex items-center gap-1.5 sm:gap-2 px-3 min-[360px]:px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-500 hover:to-amber-400 text-white font-black text-xs sm:text-sm whitespace-nowrap transition-colors shrink-0 cursor-pointer"
             >
-              <span>Join Chamber</span>
-              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span>Join Now</span>
+              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 max-[359px]:hidden" />
             </a>
           </div>
         </div>
