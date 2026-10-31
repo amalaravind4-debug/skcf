@@ -62,13 +62,14 @@ const resolveImageSrc = (src) => {
 };
 
 // ============================================================================
-// 6 SCROLL-SYNCHRONIZED KEYFRAME STANCES (Normalized coordinates 0 to 1)
+// 7 SCROLL-SYNCHRONIZED KEYFRAME STANCES (Normalized coordinates 0 to 1)
 // 0: Airborne Dive (Hero)
 // 1: Vertical Split Extension (Lineage)
 // 2: Combat Side Kick (Disciplines)
 // 3: Horse Stance Palm Guard (Gallery)
 // 4: Low Conditioning Stance (Schedule)
 // 5: Bow Stance Palm Strike (Enquiry)
+// 6: Closing Salute, feet together, palms joined, head bowed (bottom of page)
 // ============================================================================
 const SCROLL_STANCES = [
   {
@@ -245,6 +246,35 @@ const SCROLL_STANCES = [
       strikeFocus: { x: 0.28, y: 0.33 },
     },
   },
+  {
+    id: 6,
+    section: 'Page End',
+    label: 'Closing Salute',
+    accentColor: '#F59E0B',
+    secondaryColor: '#EF4444',
+    joints: {
+      head: { x: 0.50, y: 0.22 },
+      neck: { x: 0.50, y: 0.28 },
+      shoulderL: { x: 0.42, y: 0.31 },
+      shoulderR: { x: 0.58, y: 0.31 },
+      elbowL: { x: 0.39, y: 0.42 },
+      wristL: { x: 0.49, y: 0.33 },
+      elbowR: { x: 0.61, y: 0.42 },
+      wristR: { x: 0.51, y: 0.33 },
+      pelvis: { x: 0.50, y: 0.55 },
+      hipL: { x: 0.46, y: 0.55 },
+      hipR: { x: 0.54, y: 0.55 },
+      kneeL: { x: 0.47, y: 0.71 },
+      ankleL: { x: 0.48, y: 0.86 },
+      footL: { x: 0.47, y: 0.88 },
+      kneeR: { x: 0.53, y: 0.71 },
+      ankleR: { x: 0.52, y: 0.86 },
+      footR: { x: 0.53, y: 0.88 },
+      sashEnd1: { x: 0.48, y: 0.63 },
+      sashEnd2: { x: 0.49, y: 0.70 },
+      strikeFocus: { x: 0.50, y: 0.33 },
+    },
+  },
 ];
 
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -339,6 +369,11 @@ function ScrollSyncedShadowCanvas() {
             end: Math.max(0, Math.min(maxY, centre + half)),
           };
         });
+      // Closing salute owns the last stretch of scroll; earlier holds end before it
+      const finalStart = maxY - vh * 0.15;
+      const limit = finalStart - vh * 0.2;
+      zones = zones.map((z) => ({ start: Math.min(z.start, limit), end: Math.min(z.end, limit) }));
+      zones.push({ start: finalStart, end: maxY });
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -1733,6 +1768,9 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Closing stage: empty so the page ends on the warrior's salute alone */}
+      <div aria-hidden="true" className="h-lvh pointer-events-none" />
 
       {/* Footer (100% Thrithala Focus with Official Logo) */}
       <footer className="relative z-10 border-t border-white/10 bg-black/90 py-8 sm:py-10">
