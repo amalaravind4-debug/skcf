@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   motion,
-  useScroll,
-  useSpring,
-  useMotionValueEvent,
   AnimatePresence,
 } from 'framer-motion';
 import {
@@ -66,41 +63,41 @@ const resolveImageSrc = (src) => {
 
 // ============================================================================
 // 6 SCROLL-SYNCHRONIZED KEYFRAME STANCES (Normalized coordinates 0 to 1)
-// 0: Airborne Flying Kick (Hero)
+// 0: Airborne Dive (Hero)
 // 1: Vertical Split Extension (Lineage)
 // 2: Combat Side Kick (Disciplines)
-// 3: Inverted Acrobatics (Gallery)
+// 3: Horse Stance Palm Guard (Gallery)
 // 4: Low Conditioning Stance (Schedule)
-// 5: Master Salute (Enquiry)
+// 5: Bow Stance Palm Strike (Enquiry)
 // ============================================================================
 const SCROLL_STANCES = [
   {
     id: 0,
     section: 'Hero',
-    label: 'Airborne Flying Kick',
+    label: 'Airborne Dive',
     accentColor: '#EF4444',
     secondaryColor: '#F59E0B',
     joints: {
-      head: { x: 0.63, y: 0.41 },
-      neck: { x: 0.58, y: 0.43 },
-      shoulderL: { x: 0.56, y: 0.40 },
-      shoulderR: { x: 0.57, y: 0.47 },
-      elbowL: { x: 0.50, y: 0.30 },
-      wristL: { x: 0.45, y: 0.21 },
-      elbowR: { x: 0.56, y: 0.53 },
-      wristR: { x: 0.53, y: 0.50 },
-      pelvis: { x: 0.45, y: 0.48 },
-      hipL: { x: 0.45, y: 0.45 },
-      hipR: { x: 0.44, y: 0.50 },
-      kneeL: { x: 0.34, y: 0.41 },
-      ankleL: { x: 0.31, y: 0.27 },
-      footL: { x: 0.26, y: 0.24 },
-      kneeR: { x: 0.31, y: 0.48 },
-      ankleR: { x: 0.19, y: 0.43 },
-      footR: { x: 0.14, y: 0.45 },
-      sashEnd1: { x: 0.41, y: 0.59 },
-      sashEnd2: { x: 0.35, y: 0.65 },
-      strikeFocus: { x: 0.26, y: 0.24 },
+      head: { x: 0.66, y: 0.50 },
+      neck: { x: 0.62, y: 0.47 },
+      shoulderL: { x: 0.58, y: 0.43 },
+      shoulderR: { x: 0.60, y: 0.48 },
+      elbowL: { x: 0.53, y: 0.33 },
+      wristL: { x: 0.50, y: 0.22 },
+      elbowR: { x: 0.63, y: 0.55 },
+      wristR: { x: 0.68, y: 0.56 },
+      pelvis: { x: 0.42, y: 0.45 },
+      hipL: { x: 0.43, y: 0.42 },
+      hipR: { x: 0.42, y: 0.47 },
+      kneeL: { x: 0.32, y: 0.36 },
+      ankleL: { x: 0.24, y: 0.26 },
+      footL: { x: 0.20, y: 0.24 },
+      kneeR: { x: 0.29, y: 0.46 },
+      ankleR: { x: 0.17, y: 0.47 },
+      footR: { x: 0.12, y: 0.45 },
+      sashEnd1: { x: 0.40, y: 0.56 },
+      sashEnd2: { x: 0.34, y: 0.62 },
+      strikeFocus: { x: 0.68, y: 0.56 },
     },
   },
   {
@@ -164,30 +161,30 @@ const SCROLL_STANCES = [
   {
     id: 3,
     section: 'Gallery',
-    label: 'Inverted Acrobatics',
+    label: 'Horse Stance Palm Guard',
     accentColor: '#EF4444',
     secondaryColor: '#FBBF24',
     joints: {
-      head: { x: 0.48, y: 0.72 },
-      neck: { x: 0.49, y: 0.67 },
-      shoulderL: { x: 0.44, y: 0.67 },
-      shoulderR: { x: 0.55, y: 0.67 },
-      elbowL: { x: 0.41, y: 0.77 },
-      wristL: { x: 0.39, y: 0.87 },
-      elbowR: { x: 0.60, y: 0.77 },
-      wristR: { x: 0.61, y: 0.87 },
-      pelvis: { x: 0.50, y: 0.51 },
-      hipL: { x: 0.45, y: 0.51 },
-      hipR: { x: 0.54, y: 0.51 },
-      kneeL: { x: 0.41, y: 0.36 },
-      ankleL: { x: 0.37, y: 0.21 },
-      footL: { x: 0.35, y: 0.16 },
-      kneeR: { x: 0.53, y: 0.35 },
-      ankleR: { x: 0.47, y: 0.20 },
-      footR: { x: 0.49, y: 0.15 },
-      sashEnd1: { x: 0.51, y: 0.76 },
-      sashEnd2: { x: 0.52, y: 0.83 },
-      strikeFocus: { x: 0.42, y: 0.18 },
+      head: { x: 0.50, y: 0.30 },
+      neck: { x: 0.50, y: 0.36 },
+      shoulderL: { x: 0.42, y: 0.39 },
+      shoulderR: { x: 0.58, y: 0.39 },
+      elbowL: { x: 0.37, y: 0.50 },
+      wristL: { x: 0.43, y: 0.45 },
+      elbowR: { x: 0.63, y: 0.50 },
+      wristR: { x: 0.58, y: 0.46 },
+      pelvis: { x: 0.50, y: 0.60 },
+      hipL: { x: 0.45, y: 0.60 },
+      hipR: { x: 0.55, y: 0.60 },
+      kneeL: { x: 0.35, y: 0.72 },
+      ankleL: { x: 0.33, y: 0.88 },
+      footL: { x: 0.30, y: 0.89 },
+      kneeR: { x: 0.65, y: 0.72 },
+      ankleR: { x: 0.67, y: 0.88 },
+      footR: { x: 0.70, y: 0.89 },
+      sashEnd1: { x: 0.51, y: 0.70 },
+      sashEnd2: { x: 0.52, y: 0.78 },
+      strikeFocus: { x: 0.50, y: 0.45 },
     },
   },
   {
@@ -222,30 +219,30 @@ const SCROLL_STANCES = [
   {
     id: 5,
     section: 'Enquiry',
-    label: 'Master Salute',
+    label: 'Bow Stance Palm Strike',
     accentColor: '#F59E0B',
     secondaryColor: '#EF4444',
     joints: {
-      head: { x: 0.50, y: 0.28 },
-      neck: { x: 0.50, y: 0.35 },
-      shoulderL: { x: 0.42, y: 0.38 },
-      shoulderR: { x: 0.58, y: 0.38 },
-      elbowL: { x: 0.37, y: 0.48 },
-      wristL: { x: 0.48, y: 0.43 },
-      elbowR: { x: 0.63, y: 0.48 },
-      wristR: { x: 0.52, y: 0.43 },
-      pelvis: { x: 0.50, y: 0.56 },
-      hipL: { x: 0.45, y: 0.56 },
-      hipR: { x: 0.55, y: 0.56 },
-      kneeL: { x: 0.43, y: 0.71 },
-      ankleL: { x: 0.42, y: 0.86 },
-      footL: { x: 0.39, y: 0.88 },
-      kneeR: { x: 0.57, y: 0.71 },
-      ankleR: { x: 0.58, y: 0.86 },
-      footR: { x: 0.61, y: 0.88 },
-      sashEnd1: { x: 0.55, y: 0.67 },
-      sashEnd2: { x: 0.59, y: 0.76 },
-      strikeFocus: { x: 0.50, y: 0.43 },
+      head: { x: 0.56, y: 0.28 },
+      neck: { x: 0.55, y: 0.34 },
+      shoulderL: { x: 0.48, y: 0.37 },
+      shoulderR: { x: 0.62, y: 0.37 },
+      elbowL: { x: 0.38, y: 0.37 },
+      wristL: { x: 0.28, y: 0.33 },
+      elbowR: { x: 0.68, y: 0.33 },
+      wristR: { x: 0.62, y: 0.30 },
+      pelvis: { x: 0.56, y: 0.60 },
+      hipL: { x: 0.52, y: 0.60 },
+      hipR: { x: 0.60, y: 0.60 },
+      kneeL: { x: 0.43, y: 0.72 },
+      ankleL: { x: 0.32, y: 0.84 },
+      footL: { x: 0.28, y: 0.85 },
+      kneeR: { x: 0.68, y: 0.72 },
+      ankleR: { x: 0.70, y: 0.85 },
+      footR: { x: 0.74, y: 0.86 },
+      sashEnd1: { x: 0.57, y: 0.70 },
+      sashEnd2: { x: 0.58, y: 0.80 },
+      strikeFocus: { x: 0.28, y: 0.33 },
     },
   },
 ];
@@ -270,15 +267,27 @@ const interpolateJoints = (stanceA, stanceB, t) => {
 // CONTINUOUS SHADOW WARRIOR CANVAS ENGINE
 // Centered in consistent stable screen position with authentic proportions
 // ============================================================================
-function ScrollSyncedShadowCanvas({ scrollProgress }) {
+// Scroll position -> stance index (float). Inside a section's hold zone the
+// index is a whole number, so the warrior locks onto that section's pose.
+const stanceForScroll = (y, zones) => {
+  if (!zones.length) return 0;
+  if (y <= zones[0].end) return 0;
+  for (let i = 0; i < zones.length - 1; i++) {
+    const a = zones[i];
+    const b = zones[i + 1];
+    if (y <= a.end) return i;
+    if (y < b.start) return i + (y - a.end) / (b.start - a.end);
+  }
+  return zones.length - 1;
+};
+
+const PAUSE_IDS = ['hero', 'lineage', 'disciplines', 'gallery', 'schedule', 'enquiry'];
+
+function ScrollSyncedShadowCanvas() {
   const canvasRef = useRef(null);
   const progressRef = useRef(0);
   const afterimagesRef = useRef([]);
   const embersRef = useRef([]);
-
-  useMotionValueEvent(scrollProgress, 'change', (latest) => {
-    progressRef.current = Math.max(0, Math.min(1, latest));
-  });
 
   useEffect(() => {
     const pts = [];
@@ -302,13 +311,38 @@ function ScrollSyncedShadowCanvas({ scrollProgress }) {
     const ctx = canvas.getContext('2d');
     let animId;
 
+    let dpr = 1;
+    // Size from the canvas box (100lvh) so mobile URL-bar show/hide never rescales the warrior
     const handleResize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.round(canvas.clientWidth * dpr);
+      const h = Math.round(canvas.clientHeight * dpr);
+      if (canvas.width !== w) canvas.width = w;
+      if (canvas.height !== h) canvas.height = h;
     };
     handleResize();
     window.addEventListener('resize', handleResize);
+
+    // Hold zone per section: the scroll range where its pause block sits around viewport centre
+    let zones = [];
+    const measure = () => {
+      const vh = window.innerHeight;
+      const maxY = document.documentElement.scrollHeight - vh;
+      zones = PAUSE_IDS.map((id) => document.getElementById(`pause-${id}`))
+        .filter(Boolean)
+        .map((el) => {
+          const r = el.getBoundingClientRect();
+          const centre = r.top + window.scrollY + r.height / 2 - vh / 2;
+          const half = Math.min(r.height * 0.35, vh * 0.3);
+          return {
+            start: Math.max(0, Math.min(maxY, centre - half)),
+            end: Math.max(0, Math.min(maxY, centre + half)),
+          };
+        });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(document.body);
 
     const drawLimb = (ctx, p1, p2, r1, r2, fill, rimColor, rimWidth = 2) => {
       const dx = p2.x - p1.x;
@@ -512,9 +546,13 @@ function ScrollSyncedShadowCanvas({ scrollProgress }) {
       const h = canvas.height;
       ctx.clearRect(0, 0, w, h);
 
-      const p = progressRef.current;
       const totalSegments = SCROLL_STANCES.length - 1;
-      const scaled = p * totalSegments;
+      const target = stanceForScroll(window.scrollY, zones);
+      // Ease toward the target pose; snap when close so held poses are perfectly still
+      const diff = target - progressRef.current;
+      progressRef.current = Math.abs(diff) < 0.001 ? target : progressRef.current + diff * 0.12;
+      const scaled = progressRef.current;
+      const p = scaled / totalSegments;
       const idxA = Math.min(totalSegments - 1, Math.max(0, Math.floor(scaled)));
       const idxB = Math.min(totalSegments, idxA + 1);
       const localT = scaled - idxA;
@@ -524,10 +562,10 @@ function ScrollSyncedShadowCanvas({ scrollProgress }) {
       const joints = interpolateJoints(stanceA, stanceB, localT);
 
       // Consistent stable position: Martial artist remains centered in negative space
-      const isDesktop = w > 1024;
-      const stageCx = isDesktop ? w * 0.50 : w * 0.50;
-      const stageCy = h * 0.50;
-      const stageScale = Math.min(w, h) * (isDesktop ? 0.72 : 0.65);
+      const isDesktop = w / dpr > 1024;
+      const stageCx = w * 0.5;
+      const stageCy = h * 0.5;
+      const stageScale = Math.min(w, h) * (isDesktop ? 0.72 : 0.92);
 
       // Subtle glowing eclipse backdrop
       const moonR = stageScale * 0.36;
@@ -593,7 +631,7 @@ function ScrollSyncedShadowCanvas({ scrollProgress }) {
         stageCx,
         stageCy,
         stageScale,
-        isDesktop ? 0.92 : 0.50,
+        isDesktop ? 0.92 : 0.85,
         stanceA.accentColor,
         stanceA.secondaryColor,
         timeSec,
@@ -623,19 +661,20 @@ function ScrollSyncedShadowCanvas({ scrollProgress }) {
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', handleResize);
+      ro.disconnect();
     };
   }, []);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 w-full h-full"
+      className="fixed top-0 left-0 pointer-events-none z-0 w-full h-lvh"
     />
   );
 }
 
 // ============================================================================
-// 15 AUTHENTIC THRITHALA ACADEMY PHOTOS (ALL REAL, ZERO DUPLICATES)
+// 13 AUTHENTIC THRITHALA ACADEMY PHOTOS (ALL REAL, ZERO DUPLICATES)
 // ============================================================================
 const ALL_ACADEMY_PHOTOS = [
   { id: 'p01', src: 'traditional-flying-kick.jpg', span: 'col-span-1 md:col-span-2 md:row-span-2', imgClass: 'object-cover object-top' },
@@ -647,11 +686,9 @@ const ALL_ACADEMY_PHOTOS = [
   { id: 'p07', src: 'dragon-banner-team.jpg', span: 'col-span-1 md:col-span-2 md:row-span-1' },
   { id: 'p08', src: 'belt-grading-ceremony.jpg', span: 'col-span-1 md:col-span-2 md:row-span-1' },
   { id: 'p09', src: 'aerial-side-kick-grass.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p10', src: 'traditional-flying-kick.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1', imgClass: 'object-cover object-top' },
-  { id: 'p11', src: 'indoor-acrobatic-stunt.png', span: 'col-span-1 md:col-span-1 md:row-span-1' },
   { id: 'p12', src: 'dojo-close-combat-drill.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p13', src: 'disciplines-side-kick.png', span: 'col-span-1 md:col-span-2 md:row-span-1' },
   { id: 'p14', src: 'gallery-stage-acrobatics.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p13', src: 'disciplines-side-kick.png', span: 'col-span-1 md:col-span-2 md:row-span-1' },
   { id: 'p15', src: 'schedule-dojo-conditioning.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
 ];
 
@@ -794,12 +831,6 @@ const REVIEWS = [
 // MAIN LANDING PAGE COMPONENT (100% Thrithala Branch Focus)
 // ============================================================================
 export default function App() {
-  const { scrollYProgress } = useScroll();
-  const smoothScroll = useSpring(scrollYProgress, {
-    stiffness: 85,
-    damping: 24,
-    restDelta: 0.0005,
-  });
 
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [studentName, setStudentName] = useState('');
@@ -820,7 +851,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#070709] text-zinc-100 selection:bg-red-600 selection:text-white overflow-x-hidden relative font-sans">
       {/* Background Continuous Scroll-Synchronized Shadow Warrior Engine */}
-      <ScrollSyncedShadowCanvas scrollProgress={smoothScroll} />
+      <ScrollSyncedShadowCanvas />
 
       {/* Navigation Header with Official Academy Logo */}
       <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/80 border-b border-white/10">
@@ -1000,7 +1031,7 @@ export default function App() {
             </div>
 
             {/* Center Column: Open Corridor where Shadow Warrior performs */}
-            <div className="hidden lg:block lg:col-span-3 min-h-[400px] pointer-events-none" />
+            <div className="h-64 sm:h-80 lg:h-auto lg:col-span-3 lg:min-h-[400px] pointer-events-none" aria-hidden="true" />
 
             {/* Right Column: Matching Real Photo (Cropped and Fitted into Frame) */}
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
@@ -1104,7 +1135,7 @@ export default function App() {
             </motion.div>
 
             {/* Center Column: Open Corridor */}
-            <div className="hidden lg:block lg:col-span-3 min-h-[400px] pointer-events-none" />
+            <div className="h-64 sm:h-80 lg:h-auto lg:col-span-3 lg:min-h-[400px] pointer-events-none" aria-hidden="true" />
 
             {/* Right Column: Matching Real Photo (Vertical Split Extension) */}
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
@@ -1174,7 +1205,7 @@ export default function App() {
             </div>
 
             {/* Center Column: Open Corridor */}
-            <div className="hidden lg:block lg:col-span-3 min-h-[360px] pointer-events-none" />
+            <div className="h-64 sm:h-80 lg:h-auto lg:col-span-3 lg:min-h-[360px] pointer-events-none" aria-hidden="true" />
 
             {/* Right Column: Matching Real Photo (Side Kick Duel) */}
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
@@ -1320,7 +1351,7 @@ export default function App() {
             </div>
 
             {/* Center Column: Open Corridor */}
-            <div className="hidden lg:block lg:col-span-3 min-h-[360px] pointer-events-none" />
+            <div className="h-64 sm:h-80 lg:h-auto lg:col-span-3 lg:min-h-[360px] pointer-events-none" aria-hidden="true" />
 
             {/* Right Column: Matching Real Photo (Inverted Acrobatics) */}
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
@@ -1341,20 +1372,19 @@ export default function App() {
             </div>
           </div>
 
-          {/* Full Bento Photo Grid (15 Real Photos, Zero Text Explanations) */}
+          {/* Full Bento Photo Grid (13 unique photos, 3 cols x 7 rows on md+) */}
           <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[220px] sm:auto-rows-[260px] gap-3 sm:gap-4">
             {ALL_ACADEMY_PHOTOS.map((item, idx) => (
               <motion.div
                 key={item.id}
-                initial={{ opacity: 0, y: 30, scale: 0.94 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-30px' }}
                 transition={{
                   duration: 0.55,
-                  delay: idx * 0.03,
+                  delay: (idx % 3) * 0.06,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                whileHover={{ scale: 1.025, transition: { duration: 0.25 } }}
                 onClick={() => setLightboxPhoto(item.src)}
                 className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-zinc-950 cursor-pointer shadow-xl ${item.span}`}
               >
@@ -1459,7 +1489,7 @@ export default function App() {
             </motion.div>
 
             {/* Center Column: Open Corridor */}
-            <div className="hidden lg:block lg:col-span-3 min-h-[400px] pointer-events-none" />
+            <div className="h-64 sm:h-80 lg:h-auto lg:col-span-3 lg:min-h-[400px] pointer-events-none" aria-hidden="true" />
 
             {/* Right Column: Matching Real Photo (Dojo Mat Conditioning) */}
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
@@ -1645,7 +1675,7 @@ export default function App() {
             </motion.div>
 
             {/* Center Column: Open Corridor */}
-            <div className="hidden lg:block lg:col-span-3 min-h-[400px] pointer-events-none" />
+            <div className="h-64 sm:h-80 lg:h-auto lg:col-span-3 lg:min-h-[400px] pointer-events-none" aria-hidden="true" />
 
             {/* Right Column: Matching Real Photo (Shaolin Forms Duel) */}
             <div className="lg:col-span-4 flex flex-col items-center justify-center">
