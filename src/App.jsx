@@ -665,6 +665,7 @@ const PROGRAMS = [
     icon: FlameIcon,
     color: 'from-red-600 to-amber-500',
     photo: 'traditional-flying-kick.jpg',
+    photoClass: 'object-[center_8%]',
     description:
       'Authentic traditional forms, deep horse stances, weapon routines, and internal energy conditioning.',
     highlights: [
@@ -1219,7 +1220,7 @@ export default function App() {
                       <img
                         src={resolveImageSrc(prog.photo)}
                         alt={prog.title}
-                        className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
+                        className={`w-full h-full object-cover ${prog.photoClass ?? ''} group-hover:scale-108 transition-transform duration-700 ease-out`}
                         loading="lazy"
                       />
                     </div>
