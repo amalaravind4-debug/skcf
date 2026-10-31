@@ -712,19 +712,19 @@ function ScrollSyncedShadowCanvas() {
 // 13 AUTHENTIC THRITHALA ACADEMY PHOTOS (ALL REAL, ZERO DUPLICATES)
 // ============================================================================
 const ALL_ACADEMY_PHOTOS = [
-  { id: 'p01', src: 'traditional-flying-kick.jpg', span: 'col-span-1 md:col-span-2 md:row-span-2', imgClass: 'object-cover object-top' },
-  { id: 'p02', src: 'lineage-vertical-split.png', span: 'col-span-1 md:col-span-1 md:row-span-2' },
-  { id: 'p03', src: 'riverbank-duel-kicks.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p04', src: 'traditional-staff-stance.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p05', src: 'shaolin-forms-duel.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p06', src: 'outdoor-high-kick-partner.jpg', span: 'col-span-1 md:col-span-1 md:row-span-2' },
-  { id: 'p07', src: 'dragon-banner-team.jpg', span: 'col-span-1 md:col-span-2 md:row-span-1' },
-  { id: 'p08', src: 'belt-grading-ceremony.jpg', span: 'col-span-1 md:col-span-2 md:row-span-1' },
-  { id: 'p09', src: 'aerial-side-kick-grass.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p12', src: 'dojo-close-combat-drill.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p14', src: 'gallery-stage-acrobatics.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
-  { id: 'p13', src: 'disciplines-side-kick.png', span: 'col-span-1 md:col-span-2 md:row-span-1' },
-  { id: 'p15', src: 'schedule-dojo-conditioning.jpg', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p01', src: 'traditional-flying-kick.jpg', alt: 'Kung fu student in a lavender Shaolin uniform performing a flying kick, Thrithala', span: 'col-span-1 md:col-span-2 md:row-span-2', imgClass: 'object-cover object-top' },
+  { id: 'p02', src: 'lineage-vertical-split.png', alt: 'Wushu student holding a standing vertical split kick outdoors in Thrithala', span: 'col-span-1 md:col-span-1 md:row-span-2' },
+  { id: 'p03', src: 'riverbank-duel-kicks.jpg', alt: 'Two martial arts students trading high kicks on the Bharathapuzha riverbank, Thrithala', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p04', src: 'traditional-staff-stance.jpg', alt: 'Kung fu student in a low stance with a bamboo staff on a hilltop near Thrithala', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p05', src: 'shaolin-forms-duel.jpg', alt: 'Two black belt students in Shaolin uniforms practising kung fu forms outdoors', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p06', src: 'outdoor-high-kick-partner.jpg', alt: 'Kickboxing partner drill with a high kick at an outdoor training camp in Thrithala', span: 'col-span-1 md:col-span-1 md:row-span-2' },
+  { id: 'p07', src: 'dragon-banner-team.jpg', alt: 'Shaolin Kung-Fu Chamber of Fitness instructors and black belt team in front of the dragon banner', span: 'col-span-1 md:col-span-2 md:row-span-1' },
+  { id: 'p08', src: 'belt-grading-ceremony.jpg', alt: 'Kids and adult students with certificates at a kung fu belt grading ceremony in Thrithala', span: 'col-span-1 md:col-span-2 md:row-span-1' },
+  { id: 'p09', src: 'aerial-side-kick-grass.jpg', alt: 'Kung fu student mid-air performing a flying side kick on a grass field', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p12', src: 'dojo-close-combat-drill.jpg', alt: 'Self-defense close combat drill with girls and boys practising blocks in the Thrithala dojo', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p14', src: 'gallery-stage-acrobatics.jpg', alt: 'Kids martial arts stage demonstration with a handstand at a Thrithala event', span: 'col-span-1 md:col-span-1 md:row-span-1' },
+  { id: 'p13', src: 'disciplines-side-kick.png', alt: 'Row of martial arts students holding side kicks on the Bharathapuzha riverbank', span: 'col-span-1 md:col-span-2 md:row-span-1' },
+  { id: 'p15', src: 'schedule-dojo-conditioning.jpg', alt: 'Students doing low-stance conditioning on the mats inside the Thrithala martial arts chamber', span: 'col-span-1 md:col-span-1 md:row-span-1' },
 ];
 
 // ============================================================================
@@ -863,14 +863,68 @@ const REVIEWS = [
 ];
 
 // ============================================================================
+// FAQ (rendered on the page AND emitted as FAQPage JSON-LD from the same data)
+// Plain-text answers so search engines and AI assistants can quote them directly.
+// ============================================================================
+const FAQS = [
+  {
+    q: 'Where is the martial arts class in Thrithala?',
+    a: 'Shaolin Kung-Fu Chamber of Fitness is on Palakkad – Ponnani Road, Thrithala, Kerala 679534, near the Bharathapuzha riverbanks in Palakkad district. Call or WhatsApp +91 90486 81719 for directions.',
+  },
+  {
+    q: 'Which martial arts can I learn here?',
+    a: 'We teach six programs: Traditional Shaolin Kung Fu, Competitive Wushu (including Sanda), Boxing, Kickboxing, MMA & practical self-defense, and Kids Martial Arts & Acrobatics.',
+  },
+  {
+    q: 'What are the class timings?',
+    a: 'Regular classes run on Monday, Wednesday and Saturday from 6:30 PM to 8:30 PM, and on Sunday morning from 8:30 AM to 10:30 AM.',
+  },
+  {
+    q: 'What age can my child start kung fu?',
+    a: 'Children can join the Kids Batch from 5 years of age. There are separate batches for kids (5–12 years), teens (13–17 years), and youth & adults (18+ years).',
+  },
+  {
+    q: 'Are there self-defense classes for women and girls?',
+    a: 'Yes. We run a dedicated Women’s Self-Defense batch covering escape techniques, takedown defense, ground recovery, and confidence in stressful situations.',
+  },
+  {
+    q: 'Do you teach karate?',
+    a: 'We teach Shaolin Kung Fu and Wushu, which are Chinese martial arts, along with Boxing, Kickboxing and MMA. If you are looking for karate classes in Thrithala, our kung fu program offers the same benefits: belt gradings, self-defense, discipline, flexibility and fitness.',
+  },
+  {
+    q: 'Who are the instructors?',
+    a: 'Classes are taught by certified black belt masters trained under Grandmaster Sukumar in Chennai. The academy has produced 16+ black belts and district and state medalists in Wushu, Boxing and Kickboxing.',
+  },
+  {
+    q: 'Which areas do students come from?',
+    a: 'Students train with us from Thrithala, Pattambi, Muthuthala, Koottanad, Kumbidi, Perumpilavu and nearby areas of Palakkad district.',
+  },
+  {
+    q: 'How do I join or book a trial session?',
+    a: 'Send a WhatsApp message or call +91 90486 81719 to ask about admission, a trial session, and batch fees. You can also use the enquiry form on this page.',
+  },
+];
+
+const FAQ_JSON_LD = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  '@id': 'https://shaolinkungfukerala.com/#faq',
+  mainEntity: FAQS.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+}).replace(/</g, '\\u003c');
+
+// ============================================================================
 // MAIN LANDING PAGE COMPONENT (100% Thrithala Branch Focus)
 // ============================================================================
 export default function App() {
 
   const [lightboxPhoto, setLightboxPhoto] = useState(null);
   const [studentName, setStudentName] = useState('');
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState('Youth & Adults (15+ yrs)');
-  const [selectedTiming, setSelectedTiming] = useState('Evening Batch (6:30 PM – 8:30 PM)');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState('Youth & Adults (18+ yrs)');
+  const [selectedTiming, setSelectedTiming] = useState('Evening (6:30 PM – 8:30 PM)');
 
   const handleUnifiedWhatsAppEnquiry = (e) => {
     e.preventDefault();
@@ -930,6 +984,9 @@ export default function App() {
             <a href="#reviews" className="hover:text-amber-400 transition-colors">
               Reviews
             </a>
+            <a href="#faq" className="hover:text-amber-400 transition-colors">
+              FAQ
+            </a>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -988,15 +1045,17 @@ export default function App() {
                       className="w-full h-full object-contain rounded-full"
                     />
                   </div>
-                  <span>SHAOLIN KUNG-FU CHAMBER OF FITNESS • THRITHALA</span>
+                  <h1 className="text-[11px] sm:text-xs font-black uppercase tracking-[0.25em]">
+                    Kung Fu &amp; Martial Arts Classes in Thrithala, Palakkad
+                  </h1>
                 </div>
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
+                <p className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.08] text-white">
                   MASTER YOUR{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-red-500">
                     BODY, MIND
                   </span>{' '}
                   & SPIRIT.
-                </h1>
+                </p>
               </motion.div>
 
               <motion.p
@@ -1005,9 +1064,10 @@ export default function App() {
                 transition={{ duration: 0.7, delay: 0.2 }}
                 className="text-sm sm:text-base text-zinc-300 max-w-lg leading-relaxed"
               >
-                Located on Palakkad–Ponnani Road in Thrithala, our academy trains
-                kids, youth, and adults in authentic Shaolin Kung Fu, Competitive
-                Wushu, Boxing, Kickboxing, MMA, and practical
+                Shaolin Kung-Fu Chamber of Fitness is a martial arts academy on
+                Palakkad–Ponnani Road in Thrithala, Palakkad district, Kerala. We
+                train kids, teens, women, and adults in authentic Shaolin Kung Fu,
+                Competitive Wushu, Boxing, Kickboxing, MMA, and practical
                 self-defense.
               </motion.p>
 
@@ -1081,6 +1141,7 @@ export default function App() {
                 <img
                   src={resolveImageSrc('hero-dive-roll.webp')}
                   alt="Shaolin Kung-Fu Thrithala student mid-air dive by the riverside pillars"
+                  fetchPriority="high"
                   className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
               </motion.div>
@@ -1184,7 +1245,7 @@ export default function App() {
               >
                 <img
                   src={resolveImageSrc('lineage-vertical-split.png')}
-                  alt="180 Degree Vertical Split Extension in Traditional Uniform"
+                  alt="Wushu student holding a standing vertical split kick in a Shaolin uniform, Thrithala"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
               </motion.div>
@@ -1227,15 +1288,17 @@ export default function App() {
                 <Swords className="w-3.5 h-3.5" /> Combat & Fitness Curriculum
               </div>
               <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-                OUR TRAINING{' '}
+                MARTIAL ARTS CLASSES{' '}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-400">
-                  DISCIPLINES
+                  IN THRITHALA
                 </span>
               </h2>
               <p className="text-zinc-300 text-sm sm:text-base leading-relaxed">
+                Six martial arts programs under one roof: Shaolin Kung Fu, Wushu,
+                Boxing, Kickboxing, MMA &amp; self-defense, and kids martial arts.
                 Every student in our Thrithala chamber receives structured coaching
-                across striking, flexibility, acrobatics, and practical self-defense.
-                Tailored for kids, youth, women, and adults.
+                across striking, flexibility, acrobatics, and practical self-defense,
+                tailored for kids, teens, women, and adults.
               </p>
             </div>
 
@@ -1254,7 +1317,7 @@ export default function App() {
               >
                 <img
                   src={resolveImageSrc('riverbank-duel-kicks.jpg')}
-                  alt="Bharathapuzha Riverbank Combat Sparring Kick Duel"
+                  alt="Two martial arts students trading high kicks on the Bharathapuzha riverbank, Thrithala"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
               </motion.div>
@@ -1285,7 +1348,7 @@ export default function App() {
                     <div className="relative h-48 sm:h-52 w-full overflow-hidden bg-zinc-950">
                       <img
                         src={resolveImageSrc(prog.photo)}
-                        alt={prog.title}
+                        alt={`${prog.title} class at Shaolin Kung-Fu Chamber of Fitness, Thrithala`}
                         className={`w-full h-full object-cover ${prog.photoClass ?? ''} group-hover:scale-108 transition-transform duration-700 ease-out`}
                         loading="lazy"
                       />
@@ -1400,7 +1463,7 @@ export default function App() {
               >
                 <img
                   src={resolveImageSrc('indoor-acrobatic-stunt.png')}
-                  alt="Thrithala Academy Inverted Acrobatic Partner Stunt"
+                  alt="Kids martial arts acrobatics: partner handstand stunt in the Thrithala indoor hall"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
               </motion.div>
@@ -1425,7 +1488,7 @@ export default function App() {
               >
                 <img
                   src={resolveImageSrc(item.src)}
-                  alt="Shaolin Kung-Fu Thrithala Chamber Action"
+                  alt={item.alt}
                   className={`w-full h-full ${item.imgClass || 'object-cover'} group-hover:scale-108 transition-transform duration-700 ease-out`}
                   loading="lazy"
                 />
@@ -1481,9 +1544,9 @@ export default function App() {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-3xl font-black text-white">
-                Thrithala Chamber of Fitness
-              </h3>
+              <h2 className="text-xl sm:text-3xl font-black text-white">
+                Class Timings &amp; Location in Thrithala
+              </h2>
               <p className="text-xs sm:text-sm text-zinc-300 flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
                 <span>{CONTACT.address}</span>
@@ -1538,7 +1601,7 @@ export default function App() {
               >
                 <img
                   src={resolveImageSrc('schedule-dojo-conditioning.jpg')}
-                  alt="Thrithala Dojo Mat Conditioning"
+                  alt="Students doing low-stance conditioning on the mats inside the Thrithala martial arts chamber"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
               </motion.div>
@@ -1596,6 +1659,50 @@ export default function App() {
                   </div>
                 </div>
               </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* ===================================================================
+            FAQ: answers for local searches and AI assistants
+        ==================================================================== */}
+        <section
+          id="faq"
+          className="scroll-mt-24 py-14 sm:py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+        >
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: FAQ_JSON_LD }}
+          />
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-widest mb-3 bg-transparent">
+              <MessageCircle className="w-3.5 h-3.5" /> Questions Parents &amp; Students Ask
+            </div>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
+              KUNG FU CLASSES IN THRITHALA:{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-red-500">
+                FAQ
+              </span>
+            </h2>
+            <p lang="ml" className="mt-3 text-sm sm:text-base text-zinc-400">
+              തൃത്താലയിലെ കുങ്ഫു, ആയോധനകല പരിശീലന കേന്ദ്രം
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {FAQS.map(({ q, a }) => (
+              <details
+                key={q}
+                className="group rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm open:border-amber-500/40 transition-colors"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm sm:text-base font-bold text-white [&::-webkit-details-marker]:hidden">
+                  <h3>{q}</h3>
+                  <ChevronRight className="w-4 h-4 shrink-0 text-amber-400 transition-transform group-open:rotate-90" />
+                </summary>
+                <p className="px-5 pb-5 text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                  {a}
+                </p>
+              </details>
             ))}
           </div>
         </section>
@@ -1724,7 +1831,7 @@ export default function App() {
               >
                 <img
                   src={resolveImageSrc('shaolin-forms-duel.jpg')}
-                  alt="Traditional Shaolin Forms Salute and Discipline"
+                  alt="Two black belt students in Shaolin uniforms practising kung fu forms outdoors"
                   className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
               </motion.div>
@@ -1787,9 +1894,13 @@ export default function App() {
               <div className="text-xs sm:text-sm font-black text-white uppercase">
                 Shaolin Kung-fu Chamber of Fitness
               </div>
-              <div className="text-[10px] sm:text-xs text-zinc-500">
-                Palakkad – Ponnani Rd, Thrithala, Kerala 679534
-              </div>
+              <address className="not-italic text-[10px] sm:text-xs text-zinc-500">
+                Palakkad – Ponnani Rd, Thrithala, Palakkad, Kerala 679534
+              </address>
+              <p className="text-[10px] sm:text-xs text-zinc-600 mt-0.5">
+                Kung Fu, Wushu, Boxing, Kickboxing, MMA &amp; self-defense classes for
+                Thrithala, Pattambi, Koottanad, Kumbidi, Muthuthala &amp; Perumpilavu
+              </p>
             </div>
           </div>
 

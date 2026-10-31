@@ -1,13 +1,30 @@
+# Shaolin Kung-Fu Chamber of Fitness, Thrithala
+# Everyone may crawl everything. Search engines and AI assistants are named
+# explicitly so the intent is unambiguous.
+
 User-agent: *
 Allow: /
 
-# Google Search Console Auto-indexing
+# Search engines
 User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Bingbot
+User-agent: DuckDuckBot
+User-agent: Applebot
 Allow: /
 
-User-agent: Googlebot-Image
-Allow: /images/
+# AI search and assistants (Generative Engine Optimization)
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: GPTBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: ClaudeBot
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Meta-ExternalAgent
 Allow: /
 
 Sitemap: https://shaolinkungfukerala.com/sitemap.xml
-
