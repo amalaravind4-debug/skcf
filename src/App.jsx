@@ -918,7 +918,7 @@ const FAQS = [
   },
   {
     q: 'Who are the instructors?',
-    a: 'Classes are taught by certified black belt masters trained under Grandmaster Sukumar in Chennai. The academy has produced 16+ black belts and district and state medalists in Wushu, Boxing and Kickboxing.',
+    a: 'Classes are taught by certified black belt masters trained under Grandmaster Sukumar in Chennai. The academy has produced 26+ black belts and district and state medalists in Wushu, Boxing and Kickboxing.',
   },
   {
     q: 'Which areas do students come from?',
@@ -1149,7 +1149,7 @@ export default function App() {
                 </div>
                 <div className="p-3 sm:p-4 rounded-2xl border border-white/15 bg-transparent text-center sm:text-left">
                   <div className="text-xl sm:text-3xl font-black text-red-500">
-                    16+
+                    26+
                   </div>
                   <div className="text-[10px] sm:text-xs text-zinc-400 font-medium mt-0.5">
                     Black Belts
